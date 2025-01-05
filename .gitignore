@@ -1,0 +1,10 @@
+# Folders
+venv/
+data/
+__pycache__/
+
+# Files
+*.pyc
+*.pyo
+*.pyd
+*.pth
