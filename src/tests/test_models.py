@@ -2,18 +2,31 @@ import torch
 from PIL import Image
 from torchvision import models, transforms
 from sklearn.metrics import classification_report
+import pillow_heif
+
+
+pillow_heif.register_heif_opener()
 
 transform = transforms.Compose([
-    transforms.Resize((224, 224)),  # Redimensionar la imagen
-    transforms.ToTensor(),         # Convertir la imagen a tensor
-    transforms.Normalize([0.485, 0.456, 0.406], [0.229, 0.224, 0.225])  # Normalizar
+    transforms.Resize((224, 224)),          # Rezise the image to 224x224 pixels
+    transforms.ToTensor(),                  # Convert to tensor
+    transforms.Normalize(
+        [0.485, 0.456, 0.406], 
+        [0.229, 0.224, 0.225])              # Normalize the image
 ])
 
 
 def preprocess_image(image_path):
-    image = Image.open(image_path).convert("RGB")  # Transform to RGB
-    input_tensor = transform(image).unsqueeze(0)  # Add batch dimension
-    return input_tensor
+    """Preprocess an image by loading, converting to RGB, applying transformations, and adding batch dimension."""
+    try:
+        with Image.open(image_path) as img:
+            if img.mode != "RGB":
+                img = img.convert("RGB")
+            input_tensor = transform(img).unsqueeze(0)  # Apply transformation and add batch dimension
+        return input_tensor
+    except Exception as e:
+        print(f"[-] Error processing image {image_path}: {e}")
+        return None
 
 
 def load_model(path, num_classes, device: str):

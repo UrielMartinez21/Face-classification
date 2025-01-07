@@ -1,4 +1,5 @@
 import torch
+import matplotlib.pyplot as plt
 from sklearn.metrics import confusion_matrix, ConfusionMatrixDisplay
 
 def plot_confusion_matrix(model, dataloader, class_names, device):
@@ -15,5 +16,14 @@ def plot_confusion_matrix(model, dataloader, class_names, device):
     
     cm = confusion_matrix(all_labels, all_preds)
     disp = ConfusionMatrixDisplay(confusion_matrix=cm, display_labels=class_names)
-    disp.plot(cmap='Blues')
+    
+    # Plot the matrix
+    fig, ax = plt.subplots(figsize=(10, 10))  # Ajusta el tamaño de la figura
+    disp.plot(cmap='Blues', ax=ax)
+    
+    # Rotate the x-axis labels
+    plt.xticks(rotation=90)
+    plt.tight_layout()  # Ajusta los márgenes para evitar solapamientos
+    
+    plt.show()
     return cm
